@@ -1,0 +1,7 @@
+dependencies:
+  - python
+  - pip
+  - pip:
+    - -r requirements_rci.txt
+    - optuna
+    - torch_geometric
