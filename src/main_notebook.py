@@ -10,7 +10,7 @@ setup_ray_cluster(
     num_worker_nodes=MAX_NUM_WORKER_NODES,
     num_cpus_per_node=4
 )
-ray.init(runtime_env={"working_dir": "/Workspace/Repos/emir.hodzic@merck.com/DifferentiableChemistry/src/main_notebook"})
+ray.init(runtime_env={"working_dir": ""})
 
 # COMMAND ----------
 

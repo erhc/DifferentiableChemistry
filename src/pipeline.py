@@ -2,17 +2,13 @@ from neuralogic.core import Settings
 from neuralogic.nn.loss import MSE
 from neuralogic.nn import get_evaluator
 from neuralogic.optim import Adam
-import random
 import numpy as np
-import matplotlib.pyplot as plt
 import mlflow
-from urllib.parse import urlparse
 import dataset_templates
 from models import get_model
 from knowledge_base.chemrules import get_chem_rules
 from knowledge_base.subgraphs import get_subgraphs
-import sys
-from typing import Union, Optional
+from typing import Union
 from sklearn.model_selection import train_test_split
 # from IPython.display import clear_output
 

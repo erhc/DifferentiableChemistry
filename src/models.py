@@ -1,4 +1,3 @@
-from neuralogic.core import R, V, Transformation, Aggregation, Combination
 from model_templates.StandardGNN_model import StandardGNN_model
 from model_templates.RGCN_model import RGCN_model
 from model_templates.KGNN_model import KGNN_model
@@ -41,6 +40,6 @@ def get_model(model, model_name, layers, node_embed, edge_embed, connection, par
     model_function = model_type_functions.get(model)
 
     if model_function is None:
-        raise Exception(f"Invalid model name: {model}\nPlease use one of the following: {list(dataset_templates.keys())}")
+        raise Exception(f"Invalid model name: {model}\nPlease use one of the following: {list(model_type_functions.keys())}")
 
     return model_function(model_name=model_name, layers=layers, node_embed=node_embed, edge_embed=edge_embed, connection=connection, param_size=param_size, **kwargs)
