@@ -125,9 +125,14 @@ def init_test(dataset_name: str, model_name: str, param_size: int, layers: int, 
     """
     template, dataset, dataset_info = dataset_templates.get_dataset(dataset_name, param_size)
 
+    local = False
+    if model_name == "kgnn_local":
+        local = True
+        model_name = "kgnn"
+
     template += get_model(model_name, test_name, layers, dataset_info.node_embed, dataset_info.edge_embed, 
                                  dataset_info.connection, param_size, edge_types=dataset_info.bond_types, 
-                                 max_depth=max_depth)
+                                 max_depth=max_depth, local=local)
 
     if chem_rules:
         hydrocarbons, oxy, nitro, sulfuric, relaxations = chem_rules

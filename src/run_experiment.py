@@ -1,47 +1,4 @@
 # Databricks notebook source
-# MAGIC %sh apt-get -y install graphviz
-
-# COMMAND ----------
-
-from pipeline import init_test, train_test_cycle
-import mlflow
-
-test_number, dataset_name, model_name, param_size, layers, lr, epochs, split, max_depth, max_subgraph_depth, max_ring_size = (0, "mutagen", "gnn", 1, 2, 0.005, 200, 0.7, 3, 5, 7)
-
-subgraphs = False
-chemical_rules = False
-
-template, dataset = init_test(dataset_name, model_name, param_size, 1, 1, max_subgraph_depth,
-                                      max_ring_size, subgraphs=subgraphs, chem_rules=chemical_rules)
-train_loss, test_loss, evaluator = train_test_cycle(template, dataset, lr, epochs, split)
-
-# COMMAND ----------
-
-(train_loss, test_loss)
-# Base: (0.13667614718541443, 0.21052631578947367)
-# KB: (0.03685028514419569, 0.17543859649122806), (0.06960871065204183, 0.10526315789473684)
-# KB & implicit h: (0.059649797099622474, 0.15789473684210525), (0.07573930347188278, 0.21052631578947367)
-# NO KB, implicit h: (0.16030929646730002, 0.2982456140350877), (0.1545645257555831, 0.2982456140350877)
-
-# COMMAND ----------
-
-#template.draw(filename="all_rules.png")
-template.draw()
-
-# COMMAND ----------
-
-# MAGIC %pdb on
-
-# COMMAND ----------
-
-(train_loss, test_loss)
-
-# COMMAND ----------
-
-# MAGIC %sh ls /miniconda3/envs/adoption-hodzice_chem_env_2/bin/python
-
-# COMMAND ----------
-
 from pipeline import init_test, train_test_cycle
 import mlflow
 
@@ -69,13 +26,13 @@ def main(trial, dataset_name, model_name, chemical_rules, subgraphs):
         else:
             max_depth = 1
 
-        lr = 0.005
-        epochs = 200
+        lr = 0.0005 # 0.005 for mutag
+        epochs = 100 # 200 for mutag
         split = 0.7
         
 
-        param_size = trial.suggest_int("param_size", 2, 10)
-        layers = trial.suggest_int("layers", 1, 5)
+        param_size = 6 #trial.suggest_int("param_size", 2, 10)
+        layers = 2 #trial.suggest_int("layers", 1, 5)
         if model_name in ("sgn", "diffusion"):
             max_depth = trial.suggest_int("max_depth", 1, 5)
         elif model_name == "cw_net":
@@ -129,40 +86,20 @@ models = [
     "sgn"
     ]
 
-dataset_name = 'mutagen'
+dataset_name = 'ptc_fr'
+chem = 'full'
 
 def optimize_main(model_name):
-    study = optuna.create_study(study_name=model_name, load_if_exists=True)
-    main_function = partial(main, dataset_name=dataset_name, model_name=model_name, chemical_rules=True, subgraphs=True)
+    study = optuna.create_study(study_name=f"{model_name}_{chem}_{dataset_name}", load_if_exists=True)
+    c, s = (True, True)
+    if chem == 'bare':
+        c, s = (False, False)
+    main_function = partial(main, dataset_name=dataset_name, model_name=model_name, chemical_rules=c, subgraphs=s)
     study.optimize(main_function, n_trials=200, catch=(KeyError))
 
 pool = Pool(processes=len(models))
 pool.map(optimize_main, models)
 pool.close()
-
-# COMMAND ----------
-
-from neuralogic.core import Settings
-from neuralogic.nn.loss import MSE
-from neuralogic.nn import get_evaluator
-from neuralogic.optim import Adam
-
-settings = Settings(optimizer=Adam(lr=lr), epochs=epochs, error_function=MSE(), iso_value_compression=False, chain_pruning=False)
-evaluator = get_evaluator(template, settings)
-
-built_dataset = evaluator.build_dataset(dataset)
-
-# COMMAND ----------
-
-built_dataset[-1].draw()
-
-# COMMAND ----------
-
-built_dataset[1].draw()
-
-# COMMAND ----------
-
-built_dataset[0].draw()
 
 # COMMAND ----------
 

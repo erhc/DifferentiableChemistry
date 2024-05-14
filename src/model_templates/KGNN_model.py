@@ -24,7 +24,6 @@ def KGNN_model(model_name: str, layers: int, node_embed: str, edge_embed: str, c
                         R.special.alldiff(...)]
             
             if local:
-                print(connection)
                 body += [R.get(connection)(V.X, V.Y, V.B),
                         R.get(edge_embed)(V.B)[param_size]]
         

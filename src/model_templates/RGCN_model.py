@@ -11,7 +11,7 @@ def RGCN_model(model_name: str, layers: int, node_embed: str, edge_embed: str, c
                                            R.get(node_embed)(V.Y)[param_size],
                                            R.get(connection)(V.X, V.Y, V.B),
                                            # R.get(edge_embed)(V.B), # maybe doesnt make sense to have this, as the information is encoded below
-                                           R.get(t)(V.B)[param_size])) for t in edge_types] # why this is parametrized and not edge embedding?
+                                           R.get(t)(V.B))) for t in edge_types]
     # Match RGCN_0 to input node embeddings
     template = [(R.get(f"{model_name}_RGCN_0")(V.X) <= R.get(node_embed)(V.X))]
     
