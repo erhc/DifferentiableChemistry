@@ -9,7 +9,7 @@ Chemical and subgraph rules are stored in `knowledge_base` folder.
 Dataset files are stored in `datasets` folder, while they are loaded and parsed in `datasets.py`.
 The training pipeline as well as other details are in `pipeline.py`.
 
-The `main_notebook.py` is there for my testing and probably very messy, please ignore it. Same goes for `/dev` folder, it contains some notebooks with outdated code.
+To run all experiments from scratch, you can do it with `run_experiments.py`. If you want to see the code for running one set of parameters, see `main_notebook.py`, and the code which was used to analyze the results is in `analyze_results.py`. However, both of these might be messy and they are not intended for wider usage.
 
 
 *Have in mind that the code is just a working draft, it will be updated to address possible issues, as well as to document it properly.*
