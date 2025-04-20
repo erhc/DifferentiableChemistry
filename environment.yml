@@ -1,7 +1,12 @@
 dependencies:
-  - python
+  - python==3.10
   - pip
   - pip:
-    - -r requirements_rci.txt
+    - neuralogic
     - optuna
+    - torch
     - torch_geometric
+    - scikit-learn
+    - setuptools
+    - RDKit
+    - pysmiles
